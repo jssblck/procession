@@ -89,7 +89,6 @@ fn parse_redis_url(input: &str) -> Result<Url> {
         valid_schemes
             .iter()
             .map(style::constant)
-            .map(|s| format!("'{s}'"))
             .collect::<Vec<_>>()
             .join(", ")
     };
