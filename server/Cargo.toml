@@ -1,0 +1,22 @@
+[package]
+name = "procession"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = "0.5.15"
+clap = { version = "3.2.17", features = ["derive", "cargo"] }
+color-eyre = "0.6.2"
+owo-colors = { version = "3.4.0", features = ["supports-colors"] }
+redis = { version = "0.21.5", features = ["tokio-comp", "connection-manager", "aio"] }
+serde = { version = "1.0.143", features = ["derive"] }
+tokio = { version = "1.20.1", features = ["full"] }
+tracing = "0.1.36"
+tracing-subscriber = { version = "0.3.15", features = ["fmt"] }
+url = "2.2.2"
+
+[dev-dependencies]
+assert_matches = "1.5.0"
+proptest = "1.0.0"
