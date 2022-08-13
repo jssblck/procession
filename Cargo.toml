@@ -1,6 +1,9 @@
 [workspace]
 members = [
   "server",
+  "client/rs",
+  "housekeeping/it",
+  "housekeeping/bench",
 ]
 
 [profile.dev.package.backtrace]
