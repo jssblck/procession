@@ -37,3 +37,5 @@ From there you can run a specific binary:
 2022-08-13T23:28:39.623890Z  INFO procession: 👩🏻‍💻 Starting procession 0.1.0 on 0.0.0.0:3000
 2022-08-13T23:28:39.624404Z  INFO procession: ✨ Serving procession 0.1.0 on 0.0.0.0:3000
 ```
+
+[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B32924%2Fgit%40github.com%3Ajssblck%2Fprocession.git.svg?type=large)](https://app.fossa.com/projects/custom%2B32924%2Fgit%40github.com%3Ajssblck%2Fprocession.git?ref=badge_large)
