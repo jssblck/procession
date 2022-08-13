@@ -1,0 +1,13 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc b58fae7f5b43da0a3930bd8cb2f25176987f06f6e8ef7518dc55f19ba3477cd0 # shrinks to input = "rediss://$:ଡ଼/5"
+cc 3ac7fdfa7622c05437f576d044c623f668e07ab84198126f48a3df3e65bc075d # shrinks to input = "redis://㆐:\u{10a3f}/5"
+cc 7be058604bdab3731afa742d177bf6f2f860728eab762871f3b235b1b4a30671 # shrinks to input = "redisunix://a: /0"
+cc 88ae84f5338b2b10d94e1710dee203e05142ddc57d6614bd8318dd8541bb26fc # shrinks to input = "unix://A: /5"
+cc 79022ca8b5f0509dd57cfddde4b6b915793d934a7d126bb3e31ac4691abcb046 # shrinks to input = "rediss://<:0/0"
+cc f8c8e9c3352430ee9fee88c293b3290323c0a14535776ea45c8998fda96e9612 # shrinks to input = "unix://<:0/0"
+cc 0fc99ad1dd9a58e0a6c2526bee4e93d549399f7b9ec3cbd35a3139f9e4728e88 # shrinks to input = "redis://[:9/0"

@@ -5,23 +5,27 @@ use super::*;
 
 proptest! {
     #[test]
-    fn parses_valid_redis(input in r#"redis://[^\pC:]:[^\pC/]/[0-15]"#) {
+    fn parses_valid_redis(input in r#"redis://\w+:[0-6499]/[0-15]"#) {
         assert_equivalent_parse(&input);
+        assert_matches!(parse_redis_url(&input), Ok(_));
     }
 
     #[test]
-    fn parses_valid_rediss(input in r#"rediss://[^\pC:]:[^\pC/]/[0-15]"#) {
+    fn parses_valid_rediss(input in r#"rediss://\w+:[0-6499]/[0-15]"#) {
         assert_equivalent_parse(&input);
+        assert_matches!(parse_redis_url(&input), Ok(_));
     }
 
     #[test]
-    fn parses_valid_redis_unix(input in r#"redis+unix://[^\pC:]:[^\pC/]/[0-15]"#) {
+    fn parses_valid_redis_unix(input in r#"redis\+unix://\w+:[0-6499]/[0-15]"#) {
         assert_equivalent_parse(&input);
+        assert_matches!(parse_redis_url(&input), Ok(_));
     }
 
     #[test]
-    fn parses_valid_unix(input in r#"unix://[^\pC:]:[^\pC/]/[0-15]"#) {
+    fn parses_valid_unix(input in r#"unix://\w+:[0-6499]/[0-15]"#) {
         assert_equivalent_parse(&input);
+        assert_matches!(parse_redis_url(&input), Ok(_));
     }
 
     #[test]
