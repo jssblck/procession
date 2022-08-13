@@ -24,7 +24,7 @@ struct Args {
     )]
     listen: SocketAddr,
 
-    /// Redis address, in host:port format.
+    /// Redis URL
     #[clap(
         short = 'r',
         long,
