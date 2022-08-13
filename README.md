@@ -1,2 +1,2 @@
 # procession
-Background job server. Lightning fast, persistent, language independent.
+Background job server. (Will be, one day) lightning fast, persistent, and language independent.
