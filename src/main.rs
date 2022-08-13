@@ -60,8 +60,8 @@ async fn main() -> Result<()> {
 
     info!(
         "👩🏻‍💻 Starting {} {} on {}",
-        style::constant(&service_name),
-        style::constant(&service_version),
+        style::constant(service_name),
+        style::constant(service_version),
         style::url(&listen),
     );
     let app = Router::new()
@@ -72,8 +72,8 @@ async fn main() -> Result<()> {
 
     info!(
         "✨ Serving {} {} on {}",
-        style::constant(&service_name),
-        style::constant(&service_version),
+        style::constant(service_name),
+        style::constant(service_version),
         style::url(&listen)
     );
     server.await.wrap_err("run server")?;
@@ -82,6 +82,26 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
+/// This is like [`redis::parse_redis_url`], but doesn't throw away errors.
 fn parse_redis_url(input: &str) -> Result<Url> {
-    redis::parse_redis_url(input).ok_or_else(|| eyre!("invalid redis url: {input}"))
+    let valid_schemes = vec!["redis", "rediss", "redis+unix", "unix"];
+    let display_schemes = || {
+        valid_schemes
+            .iter()
+            .map(style::constant)
+            .map(|s| format!("'{s}'"))
+            .collect::<Vec<_>>()
+            .join(", ")
+    };
+
+    match Url::parse(input) {
+        Ok(result) => match result.scheme() {
+            scheme if valid_schemes.contains(&scheme) => Ok(result),
+            _ => Err(eyre!(
+                "invalid scheme, must be one of {}",
+                display_schemes()
+            )),
+        },
+        Err(e) => Err(eyre!("parse url: {e}")),
+    }
 }
