@@ -11,6 +11,9 @@ use url::Url;
 mod api;
 mod style;
 
+#[cfg(test)]
+mod test;
+
 #[derive(Parser, Debug)]
 #[clap(version)]
 struct Args {
