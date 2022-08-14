@@ -1,3 +1,5 @@
+//! Provides the API layer, represented by an axum [`Router`].
+
 use axum::{routing::get, Extension, Router};
 use redis::aio::ConnectionManager;
 

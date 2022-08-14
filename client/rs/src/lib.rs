@@ -1,4 +1,16 @@
-//! The client for `procession`.
+//! The Rust client for `procession`.
+//!
+//! # Versioning
+//!
+//! This library follows semantic versioning releases.
+//!
+//! # Compatibility
+//!
+//! The `procession` server supports all previous versions of client libraries:
+//! it will never introduce a breaking change.
+//!
+//! However, newer libraries may be able to offer new features.
+//! It's generally recommended to use the newest version of the library you're able.
 
 #![deny(clippy::unwrap_used)]
 #![deny(unsafe_code)]
@@ -49,7 +61,7 @@ impl Client {
         Ok(Self {
             base_url: Url::parse(base_url)?,
             client: reqwest::Client::builder()
-                .user_agent("multivac/client/v1")
+                .user_agent("procession/client/v1")
                 .build()?,
         })
     }

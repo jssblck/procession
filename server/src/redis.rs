@@ -1,3 +1,7 @@
+//! Helpers for redis connections.
+
+use std::time::{Duration, Instant};
+
 use color_eyre::{
     eyre::{eyre, Context},
     Result,
@@ -7,6 +11,7 @@ use url::Url;
 
 use crate::style;
 
+/// Connect to the redis server at the provided URL.
 pub async fn connect(addr: &Url) -> Result<ConnectionManager> {
     let client = Client::open(addr.clone()).wrap_err("create redis connection")?;
     let manager = ConnectionManager::new(client)
@@ -15,12 +20,14 @@ pub async fn connect(addr: &Url) -> Result<ConnectionManager> {
     Ok(manager)
 }
 
-pub async fn ping(connection: &mut ConnectionManager) -> Result<()> {
+/// Ping the redis server.
+pub async fn ping(connection: &mut ConnectionManager) -> Result<Duration> {
+    let start = Instant::now();
     redis::cmd("PING")
         .query_async(connection)
         .await
         .wrap_err("ping redis")?;
-    Ok(())
+    Ok(start.elapsed())
 }
 
 /// This is like [`redis::parse_redis_url`], but doesn't throw away errors.
