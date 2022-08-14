@@ -38,4 +38,7 @@ From there you can run a specific binary:
 2022-08-13T23:28:39.624404Z  INFO procession: ✨ Serving procession 0.1.0 on 0.0.0.0:3000
 ```
 
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B32924%2Fgit%40github.com%3Ajssblck%2Fprocession.git.svg?type=large)](https://app.fossa.com/projects/custom%2B32924%2Fgit%40github.com%3Ajssblck%2Fprocession.git?ref=badge_large)
+# Licensing
+
+[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B32924%2Fgithub.com%2Fjssblck%2Fprocession.svg?type=small)](https://app.fossa.com/projects/custom%2B32924%2Fgithub.com%2Fjssblck%2Fprocession?ref=badge_small)
+[View third party notices](https://app.fossa.com/reports/9bb31527-cd6e-4186-adbe-f561d236ef2c)
