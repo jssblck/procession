@@ -7,6 +7,6 @@ edition = "2021"
 
 [dependencies]
 bytes = "1.2.1"
-reqwest = { version = "0.11.11", features = ["json", "rustls-tls"] }
+reqwest = { version = "0.11.11", features = ["json", "rustls-tls-native-roots"] }
 thiserror = "1.0.32"
 url = "2.2.2"
