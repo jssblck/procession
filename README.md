@@ -1,3 +1,9 @@
+<div align="center">
+
+[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B32924%2Fgithub.com%2Fjssblck%2Fprocession.svg?type=small)](https://app.fossa.com/projects/custom%2B32924%2Fgithub.com%2Fjssblck%2Fprocession?ref=badge_small)
+
+</div>
+
 # Procession
 
 `procession` is a fault tolerant, performant, language agnostic background job server.
@@ -40,5 +46,4 @@ From there you can run a specific binary:
 
 # Licensing
 
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B32924%2Fgithub.com%2Fjssblck%2Fprocession.svg?type=small)](https://app.fossa.com/projects/custom%2B32924%2Fgithub.com%2Fjssblck%2Fprocession?ref=badge_small)
 [View third party notices](https://app.fossa.com/reports/9bb31527-cd6e-4186-adbe-f561d236ef2c)
