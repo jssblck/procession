@@ -14,6 +14,6 @@ pub async fn handle(
         })
         .map(|d| format!("{:#?}", d))?;
 
-    info!("🚀 Redis latency: {}", style::constant(&latency));
+    info!("Redis latency: {}", style::constant(&latency));
     Ok(format!("redis latency: {latency}"))
 }
