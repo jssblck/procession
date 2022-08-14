@@ -4,12 +4,10 @@ use axum::{Router, Server};
 use clap::Parser;
 use color_eyre::{eyre::eyre, eyre::Context, Result};
 
+use procession::{api, style};
 use redis::{aio::ConnectionManager, Client};
 use tracing::info;
 use url::Url;
-
-mod api;
-mod style;
 
 #[cfg(test)]
 mod test;
@@ -67,9 +65,8 @@ async fn main() -> Result<()> {
         style::constant(service_version),
         style::url(&listen),
     );
-    let app = Router::new()
-        // .merge(api::server(client))
-        ;
+
+    let app = Router::new().merge(api::server());
     let bind = Server::try_bind(&listen).wrap_err("bind listen address")?;
     let server = bind.serve(app.into_make_service());
 
