@@ -22,15 +22,41 @@
 
 For more detail, see [Architecture](./ARCHITECTURE.md).
 
-# Building
+# Building and running
 
 This project uses [`cargo`](https://doc.rust-lang.org/cargo/) for build management.
 
-To list available binaries, execute `cargo run` from the root directory:
+## Building
+
+Running `cargo build` in the root builds all crates in the workspace, optionally with `--release`.
+
+To list available binaries, execute `cargo build --bin` from the root directory:
 ```
-; cargo r
-error: `cargo run` could not determine which binary to run. Use the `--bin` option to specify a binary, or the `default-run` manifest key.
-available binaries: bench, it, procession
+; cargo build --bin
+error: "--bin" takes one argument.
+Available binaries:
+    bench
+    it
+    procession
+```
+
+Then build the binary you're after directly:
+```
+; cargo build --bin bench
+```
+
+## Running
+
+By default, `cargo run` starts and builds `procession`.
+
+To list available binaries, execute `cargo run --bin` from the root directory:
+```
+; cargo run --bin
+error: "--bin" takes one argument.
+Available binaries:
+    bench
+    it
+    procession
 ```
 
 From there you can run a specific binary:

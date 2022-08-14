@@ -16,7 +16,7 @@ pub async fn connect(addr: &Url) -> Result<ConnectionManager> {
     let client = Client::open(addr.clone()).wrap_err("create redis connection")?;
     let manager = ConnectionManager::new(client)
         .await
-        .wrap_err("upgrade redis connection to managed pool")?;
+        .wrap_err("upgrade connection to managed pool")?;
     Ok(manager)
 }
 
@@ -26,7 +26,7 @@ pub async fn ping(connection: &mut ConnectionManager) -> Result<Duration> {
     redis::cmd("PING")
         .query_async(connection)
         .await
-        .wrap_err("ping redis")?;
+        .wrap_err("ping")?;
     Ok(start.elapsed())
 }
 

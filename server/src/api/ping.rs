@@ -7,7 +7,7 @@ pub async fn handle(
     Extension(mut pool): Extension<ConnectionManager>,
 ) -> Result<String, StatusCode> {
     let latency = redis::ping(&mut pool).await.map_err(|e| {
-        error!("handle /ping: {e:#}");
+        error!("redis: {e:#}");
         StatusCode::INTERNAL_SERVER_ERROR
     })?;
 
