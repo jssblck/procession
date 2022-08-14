@@ -1,9 +1,9 @@
 //! Helpers for executing an ephemeral server instance.
 
-use std::net::TcpListener;
+use std::{env, net::TcpListener};
 
 use axum::Server;
-use procession::api;
+use procession::{api, redis};
 
 /// Run the client method and unwrap the result.
 macro_rules! request {
@@ -21,13 +21,16 @@ macro_rules! request {
     }};
 }
 
+use ::redis::aio::ConnectionManager;
 // https://stackoverflow.com/a/67140319
 pub(crate) use request;
 
 /// Runs a server on a random port in the current Tokio runtime.
 #[track_caller]
-pub fn server() -> String {
-    let app = api::server();
+pub async fn server() -> String {
+    let conn = connect_redis().await;
+    let app = api::server(conn);
+
     let listener = TcpListener::bind("127.0.0.1:0").expect("bind ephemeral socket");
     let addr = listener.local_addr().expect("get bound address");
 
@@ -39,4 +42,16 @@ pub fn server() -> String {
     });
 
     format!("http://{addr}")
+}
+
+#[track_caller]
+async fn connect_redis() -> ConnectionManager {
+    let redis_addr =
+        env::var("PROCESSION_TEST_REDIS").unwrap_or_else(|_| "redis://localhost:6379/1".into());
+    let redis_addr = redis::parse_url(&redis_addr).expect("must parse redis address");
+    let mut conn = redis::connect(&redis_addr)
+        .await
+        .expect("must connect to redis");
+    redis::ping(&mut conn).await.expect("redis must be online");
+    conn
 }

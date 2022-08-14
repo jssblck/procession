@@ -55,11 +55,11 @@ impl Client {
     }
 
     /// Checks that the server is online.
-    pub async fn ping(&self) -> Result<(), Error> {
+    pub async fn ping(&self) -> Result<String, Error> {
         let url = self.base_url.join("/api/v1/ping")?;
         let response = self.client.get(url).send().await?;
-        self.guard_status(response, StatusCode::OK).await?;
-        Ok(())
+        let body = self.guard_status(response, StatusCode::OK).await?;
+        Ok(String::from_utf8_lossy(body.deref()).to_string())
     }
 }
 

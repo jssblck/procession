@@ -1,9 +1,14 @@
-use axum::{routing::get, Router};
+use axum::{routing::get, Extension, Router};
+use redis::aio::ConnectionManager;
 
 mod ping;
 
 /// Powers the API.
-pub fn server() -> Router {
-    let api = Router::new().route("/ping", get(ping::handle));
+pub fn server(pool: ConnectionManager) -> Router {
+    // `ConnectionManager` can just be cloned, it handles multiplexing and new connection creation.
+    let api = Router::new()
+        .route("/ping", get(ping::handle))
+        .layer(Extension(pool));
+
     Router::new().nest("/api/v1", api)
 }

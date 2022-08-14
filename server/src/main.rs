@@ -2,10 +2,10 @@ use std::{net::SocketAddr, str::FromStr};
 
 use axum::{Router, Server};
 use clap::Parser;
-use color_eyre::{eyre::eyre, eyre::Context, Result};
+use color_eyre::{eyre::Context, Result};
 
-use procession::{api, style};
-use redis::{aio::ConnectionManager, Client};
+use procession::{api, redis, style};
+
 use tracing::info;
 use url::Url;
 
@@ -31,7 +31,7 @@ struct Args {
         long,
         default_value = "redis://localhost:6379/0",
         takes_value = true,
-        parse(try_from_str = parse_redis_url)
+        parse(try_from_str = redis::parse_url)
     )]
     redis_host: Url,
 }
@@ -49,14 +49,8 @@ async fn main() -> Result<()> {
     let service_version = env!("CARGO_PKG_VERSION");
 
     info!("🤔 Checking connection to {}", style::url(&redis));
-    let client = Client::open(redis.clone()).wrap_err("create redis connection")?;
-    let mut manager = ConnectionManager::new(client)
-        .await
-        .wrap_err("upgrade redis connection to managed pool")?;
-    redis::cmd("PING")
-        .query_async(&mut manager)
-        .await
-        .wrap_err("ping redis")?;
+    let mut conn = redis::connect(&redis).await?;
+    redis::ping(&mut conn).await?;
     info!("💚 Redis is running at {}", style::url(&redis));
 
     info!(
@@ -66,7 +60,7 @@ async fn main() -> Result<()> {
         style::url(&listen),
     );
 
-    let app = Router::new().merge(api::server());
+    let app = Router::new().merge(api::server(conn));
     let bind = Server::try_bind(&listen).wrap_err("bind listen address")?;
     let server = bind.serve(app.into_make_service());
 
@@ -80,27 +74,4 @@ async fn main() -> Result<()> {
 
     info!("😴 Service exited cleanly, shutting down");
     Ok(())
-}
-
-/// This is like [`redis::parse_redis_url`], but doesn't throw away errors.
-fn parse_redis_url(input: &str) -> Result<Url> {
-    let valid_schemes = vec!["redis", "rediss", "redis+unix", "unix"];
-    let display_schemes = || {
-        valid_schemes
-            .iter()
-            .map(style::constant)
-            .collect::<Vec<_>>()
-            .join(", ")
-    };
-
-    match Url::parse(input) {
-        Ok(result) => match result.scheme() {
-            scheme if valid_schemes.contains(&scheme) => Ok(result),
-            _ => Err(eyre!(
-                "invalid scheme, must be one of {}",
-                display_schemes()
-            )),
-        },
-        Err(e) => Err(eyre!("parse url: {e}")),
-    }
 }
