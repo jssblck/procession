@@ -58,10 +58,12 @@ pub struct Client {
 impl Client {
     /// Create a [`Client`] configured with the provided base URL.
     pub fn new(base_url: &str) -> Result<Self, Error> {
+        let name = env!("CARGO_PKG_NAME");
+        let version = env!("CARGO_PKG_VERSION");
         Ok(Self {
             base_url: Url::parse(base_url)?,
             client: reqwest::Client::builder()
-                .user_agent("procession/client/v1")
+                .user_agent(format!("{name}/{version}"))
                 .build()?,
         })
     }
