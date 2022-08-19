@@ -13,3 +13,5 @@
 pub mod api;
 pub mod redis;
 pub mod style;
+
+pub(crate) mod internal;
