@@ -73,3 +73,9 @@ From there you can run a specific binary:
 # Licensing
 
 [View third party notices](https://app.fossa.com/reports/9bb31527-cd6e-4186-adbe-f561d236ef2c)
+
+## APSL
+
+This program links against Apple's `Security.Framework` on macOS systems.<br>
+The `Security.Framework` source is available here: https://opensource.apple.com/source/Security/<br>
+And documentation is available here: https://developer.apple.com/documentation/security
