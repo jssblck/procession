@@ -29,7 +29,7 @@ jobs:
       run: git diff --exit-code
 
     - name: Full checks
-      run: make check
+      run: make check-dynamic
       env:
         REDIS_ADDR: "redis://redis:6379/0"
     - name: Check git status
