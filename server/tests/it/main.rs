@@ -14,7 +14,7 @@ mod run;
 pub const DEFAULT_REDIS: &str = "redis://localhost:6379/1";
 
 /// The environment variable specifying the redis server address.
-pub const REDIS_ENV: &str = "PROCESSION_TEST_REDIS";
+pub const REDIS_ENV: &str = "REDIS_ADDR";
 
 #[tokio::test]
 async fn ping() {

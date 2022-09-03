@@ -1,0 +1,36 @@
+name: static analysis
+on: [push]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        components: clippy, rustfmt
+    - uses: Swatinem/rust-cache@v1.3.0
+      shared-key: global-cache
+
+    - name: Static checks
+      run: make check-static
+    - name: Check git status
+      run: git diff --exit-code
+
+    - name: Full checks
+      run: make check
+      env:
+        REDIS_ADDR: "redis://redis:6379/0"
+    - name: Check git status
+      run: git diff --exit-code
+    

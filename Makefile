@@ -2,6 +2,14 @@ check: fmt lint build test
 	@echo ""
 	@echo "✨ Good to go!"
 
+check-static: fmt lint
+	@echo ""
+	@echo "✨ Good to go!"
+
+check-dynamic: build test
+	@echo ""
+	@echo "✨ Good to go!"
+
 lint:
 	@echo ""
 	@echo "🔬 Lint"
@@ -12,7 +20,7 @@ test: install-deps
 	@echo "🧪 Test"
 	@cargo nextest run
 
-build: build-readmes fmt
+build: build-readmes
 	@echo ""
 	@echo "🚧 Build"
 	@cargo build
@@ -37,4 +45,4 @@ install-deps:
 	@cargo install cargo-readme --locked
 	@cargo install cargo-nextest --locked
 
-.PHONY: test build check fmt lint build-readmes install-deps
+.PHONY: test build check check-static fmt lint build-readmes install-deps
