@@ -1,11 +1,8 @@
 name: static analysis
 on: [push]
 
-# Run checkers independently, so you see errors from each.
 jobs:
-
-  # Lint with Clippy
-  clippy:
+  check:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -13,68 +10,9 @@ jobs:
       with:
         profile: minimal
         toolchain: stable
-        components: clippy
+        components: clippy, rustfmt
     - uses: Swatinem/rust-cache@v1.3.0
-    - uses: actions-rs/clippy-check@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        args: --all-targets --all-features -- -D warnings
-
-  # Security audit  
-  audit:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-    - uses: Swatinem/rust-cache@v1.3.0
-    - uses: actions-rs/audit-check@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-
-  # Formatting check
-  rustfmt:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        components: rustfmt
-    - name: run rustfmt
-      run: cargo fmt
+    - name: make check
+      run: make
     - name: check git status
       run: git diff --exit-code
-
-  # Ensure readmes are up to date.
-  # TODO: As we flesh out the clients, do the same thing for them.
-  readmes:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-    - name: install cargo-readme
-      run: cargo install cargo-readme
-    - name: build ideal readmes
-      run: cargo readme -i server/src/main.rs > server/README.md
-    - name: check git status
-      run: git diff --exit-code
-
-  # Ensure every crate can actually build
-  build-all:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-    - uses: Swatinem/rust-cache@v1.3.0
-    - name: run build
-      run: cargo build
