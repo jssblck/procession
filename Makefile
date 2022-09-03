@@ -42,7 +42,6 @@ build-readmes: install-deps
 install-deps:
 	@echo ""
 	@echo "📦 Install tools"
-	@cargo install cargo-readme --locked
-	@cargo install cargo-nextest --locked
+	@cargo install cargo-readme cargo-nextest --locked
 
 .PHONY: test build check check-static fmt lint build-readmes install-deps
