@@ -21,7 +21,7 @@ jobs:
         components: clippy, rustfmt
     - uses: Swatinem/rust-cache@v1.3.0
       with:
-        shared-key: global-cache
+        sharedKey: global-cache
 
     - name: Static checks
       run: make check-static
