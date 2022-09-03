@@ -1,4 +1,4 @@
-//! Helpers for redis connections.
+//! Extensions for redis.
 
 use std::time::{Duration, Instant};
 

@@ -3,7 +3,10 @@
 use std::{env, net::TcpListener};
 
 use axum::Server;
-use procession::{api, redis};
+use procession::{api, redis_ext};
+use redis::aio::ConnectionManager;
+
+use crate::{DEFAULT_REDIS, REDIS_ENV};
 
 /// Run the client method and unwrap the result.
 macro_rules! request {
@@ -20,10 +23,6 @@ macro_rules! request {
         .expect("communicate with server")
     }};
 }
-
-use ::redis::aio::ConnectionManager;
-// https://stackoverflow.com/a/67140319
-pub(crate) use request;
 
 /// Runs a server on a random port in the current Tokio runtime.
 #[track_caller]
@@ -46,12 +45,19 @@ pub async fn server() -> String {
 
 #[track_caller]
 async fn connect_redis() -> ConnectionManager {
-    let redis_addr =
-        env::var("PROCESSION_TEST_REDIS").unwrap_or_else(|_| "redis://localhost:6379/1".into());
-    let redis_addr = redis::parse_url(&redis_addr).expect("must parse redis address");
-    let mut conn = redis::connect(&redis_addr)
+    let redis_addr = env::var(REDIS_ENV).unwrap_or_else(|_| DEFAULT_REDIS.into());
+    let redis_addr = redis_ext::parse_url(&redis_addr).expect("must parse redis address");
+
+    let mut conn = redis_ext::connect(&redis_addr)
         .await
         .expect("must connect to redis");
-    redis::ping(&mut conn).await.expect("redis must be online");
+
+    redis_ext::ping(&mut conn)
+        .await
+        .expect("redis must be online");
+
     conn
 }
+
+// https://stackoverflow.com/a/67140319
+pub(crate) use request;
