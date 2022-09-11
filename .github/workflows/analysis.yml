@@ -35,7 +35,7 @@ jobs:
     - name: Full checks
       run: make check-dynamic
       env:
-        REDIS_ADDR: redis://redis:6379/0
+        REDIS_ADDR: redis://localhost:6379/0
     - name: Check git status
       run: git diff --exit-code
     
