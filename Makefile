@@ -15,7 +15,7 @@ lint:
 	@echo "🔬 Lint"
 	@cargo clippy --all-targets --all-features -- -D warnings
 
-test: install-deps
+test:
 	@echo ""
 	@echo "🧪 Test"
 	@cargo nextest run
@@ -31,7 +31,7 @@ fmt:
 	@cargo fmt --all
 	@echo "    Done!"
 
-build-readmes: install-deps
+build-readmes:
 	@echo ""
 	@echo "📖 Generate readmes"
 	@cargo readme -r server -i src/main.rs -o README.md
