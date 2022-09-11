@@ -50,7 +50,7 @@ async fn connect_redis() -> ConnectionManager {
 
     let mut conn = redis_ext::connect(&redis_addr)
         .await
-        .expect("must connect to redis");
+        .unwrap_or_else(|_| panic!("must connect to redis at {redis_addr}"));
 
     redis_ext::ping(&mut conn)
         .await
