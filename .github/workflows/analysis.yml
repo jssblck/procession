@@ -7,10 +7,8 @@ jobs:
     container: ghcr.io/jssblck/rust-ci
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: Swatinem/rust-cache@v1.3.0
-      with:
-        sharedKey: static-cache
+    - uses: actions/checkout@v3
+    - uses: Swatinem/rust-cache@v2
 
     - run: make check-static
     - run: git diff --exit-code
@@ -29,10 +27,8 @@ jobs:
           --health-retries 5
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: Swatinem/rust-cache@v1.3.0
-      with:
-        sharedKey: dynamic-cache
+    - uses: actions/checkout@v3
+    - uses: Swatinem/rust-cache@v2
 
     - run: make check-dynamic
       env:

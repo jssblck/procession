@@ -7,3 +7,4 @@ Planned libraries:
 - [ ] [Rust](rs/README.md)
 - [ ] [Go](go/README.md)
 - [ ] [TypeScript](ts/README.md)
+- [ ] [Haskell](haskell/README.md)
