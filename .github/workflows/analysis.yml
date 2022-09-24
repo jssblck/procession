@@ -17,10 +17,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - run: |
+        rustup component add rustfmt
+        rustup component add clippy
     - uses: Swatinem/rust-cache@v1.3.0
       with:
         sharedKey: global-cache
-    
+
     - name: Static checks
       run: make check-static
     - name: Check git status
