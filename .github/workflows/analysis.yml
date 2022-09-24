@@ -1,9 +1,24 @@
-name: static analysis
+name: Project analysis
 on: [push]
 
 jobs:
-  check:
+  static:
     runs-on: ubuntu-latest
+    container: ghcr.io/jssblck/rust-ci
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: Swatinem/rust-cache@v1.3.0
+      with:
+        sharedKey: static-cache
+
+    - run: make check-static
+    - run: git diff --exit-code
+    
+  dynamic:
+    runs-on: ubuntu-latest
+    container: ghcr.io/jssblck/rust-ci
+    
     services:
       redis:
         image: redis
@@ -12,25 +27,14 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
     steps:
     - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        components: clippy, rustfmt
     - uses: Swatinem/rust-cache@v1.3.0
-      shared-key: global-cache
+      with:
+        sharedKey: dynamic-cache
 
-    - name: Static checks
-      run: make check-static
-    - name: Check git status
-      run: git diff --exit-code
-
-    - name: Full checks
-      run: make check
+    - run: make check-dynamic
       env:
-        REDIS_ADDR: "redis://redis:6379/0"
-    - name: Check git status
-      run: git diff --exit-code
-    
+        REDIS_ADDR: redis://redis:6379/0
+    - run: git diff --exit-code
