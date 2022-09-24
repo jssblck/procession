@@ -6,11 +6,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout
-      - run: curl 'https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh' | bash
-      - run: fossa analyze .
+      - uses: actions/checkout@v2
+      - name: Install fossa-cli from github
+        run: curl 'https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh' | bash
+
+      - name: Run FOSSA dependency scan
         env:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
-      - run: fossa test
+        run: fossa analyze .
+
+      - name: Gate PR on license compliance
         env:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
+        run: fossa test
