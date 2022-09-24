@@ -4,6 +4,8 @@ on: [push]
 jobs:
   check:
     runs-on: ubuntu-latest
+    container: ghcr.io/jssblck/rust-ci
+    
     services:
       redis:
         image: redis
@@ -15,18 +17,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        components: clippy, rustfmt
     - uses: Swatinem/rust-cache@v1.3.0
       with:
         sharedKey: global-cache
-    - uses: taiki-e/install-action@nextest
-    - name: Install tools
-      run: cargo install cargo-readme
-
+    
     - name: Static checks
       run: make check-static
     - name: Check git status
@@ -34,5 +28,8 @@ jobs:
 
     - name: Full checks
       run: make check-dynamic
+      env:
+        REDIS_ADDR: redis://redis:6379/0
+        RUST_BACKTRACE: "1"
     - name: Check git status
       run: git diff --exit-code
