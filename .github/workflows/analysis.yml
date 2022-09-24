@@ -2,7 +2,20 @@ name: Project analysis
 on: [push]
 
 jobs:
-  check:
+  static:
+    runs-on: ubuntu-latest
+    container: ghcr.io/jssblck/rust-ci
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: Swatinem/rust-cache@v1.3.0
+      with:
+        sharedKey: static-cache
+
+    - run: make check-static
+    - run: git diff --exit-code
+    
+  dynamic:
     runs-on: ubuntu-latest
     container: ghcr.io/jssblck/rust-ci
     
@@ -17,22 +30,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - run: |
-        rustup component add rustfmt
-        rustup component add clippy
     - uses: Swatinem/rust-cache@v1.3.0
       with:
-        sharedKey: global-cache
+        sharedKey: dynamic-cache
 
-    - name: Static checks
-      run: make check-static
-    - name: Check git status
-      run: git diff --exit-code
-
-    - name: Full checks
-      run: make check-dynamic
+    - run: make check-dynamic
       env:
         REDIS_ADDR: redis://redis:6379/0
-        RUST_BACKTRACE: "1"
-    - name: Check git status
-      run: git diff --exit-code
+    - run: git diff --exit-code
