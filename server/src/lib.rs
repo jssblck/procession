@@ -11,5 +11,3 @@
 #![warn(rust_2018_idioms)]
 
 pub mod api;
-pub mod redis_ext;
-pub mod style;

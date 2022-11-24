@@ -10,12 +10,6 @@ use procession_client::Client;
 
 mod run;
 
-/// The default redis server address.
-pub const DEFAULT_REDIS: &str = "redis://localhost:6379/1";
-
-/// The environment variable specifying the redis server address.
-pub const REDIS_ENV: &str = "REDIS_ADDR";
-
 #[tokio::test]
 async fn ping() {
     let addr = run::server().await;

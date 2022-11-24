@@ -52,19 +52,15 @@
 //! the idea is that this simplifies both the client and server implementations by ensuring that when connected
 //! over TCP both ends of the connection are solely concerned with one kind of task.
 
-use std::{net::SocketAddr, str::FromStr};
+use std::{fmt::Display, net::SocketAddr, str::FromStr};
 
 use axum::{Router, Server};
 use clap::Parser;
-use color_eyre::{eyre::Context, Result};
 
-use procession::{api, redis_ext, style};
+use error_stack::{Context, IntoReport, Report, ResultExt};
+use procession::api;
 
 use tracing::info;
-use url::Url;
-
-#[cfg(test)]
-mod test;
 
 #[derive(Parser, Debug)]
 #[clap(version)]
@@ -101,53 +97,38 @@ struct Args {
         parse(try_from_str = SocketAddr::from_str)
     )]
     listen_job: SocketAddr,
-
-    /// Redis URL
-    #[clap(
-        short = 'r',
-        long,
-        default_value = "redis://localhost:6379/0",
-        takes_value = true,
-        parse(try_from_str = redis_ext::parse_url)
-    )]
-    redis_host: Url,
 }
 
+#[derive(Debug)]
+struct StartupError;
+
+impl Display for StartupError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "start server")
+    }
+}
+
+impl Context for StartupError {}
+
 #[tokio::main]
-async fn main() -> Result<()> {
-    color_eyre::install()?;
+async fn main() -> Result<(), Report<StartupError>> {
     tracing_subscriber::fmt::init();
 
     let args = Args::parse();
     let listen_http = args.listen_http;
-    let redis_host = args.redis_host;
 
     let service_name = env!("CARGO_PKG_NAME");
     let service_version = env!("CARGO_PKG_VERSION");
+    info!("👩🏻‍💻 Starting {service_name} {service_version} on {listen_http}",);
 
-    info!("🤔 Checking connection to {}", style::url(&redis_host));
-    let mut conn = redis_ext::connect(&redis_host).await?;
-    redis_ext::ping(&mut conn).await?;
-    info!("💚 Redis is running at {}", style::url(&redis_host));
+    let app = Router::new().merge(api::server());
+    let bind = Server::try_bind(&listen_http)
+        .into_report()
+        .change_context(StartupError)?;
 
-    info!(
-        "👩🏻‍💻 Starting {} {} on {}",
-        style::constant(service_name),
-        style::constant(service_version),
-        style::url(&listen_http),
-    );
-
-    let app = Router::new().merge(api::server(conn));
-    let bind = Server::try_bind(&listen_http).wrap_err("bind listen address")?;
     let server = bind.serve(app.into_make_service());
-
-    info!(
-        "✨ Serving {} {} on {}",
-        style::constant(service_name),
-        style::constant(service_version),
-        style::url(&listen_http)
-    );
-    server.await.wrap_err("run server")?;
+    info!("✨ Serving {service_name} {service_version} on {listen_http}",);
+    server.await.into_report().change_context(StartupError)?;
 
     info!("😴 Service exited cleanly, shutting down");
     Ok(())

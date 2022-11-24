@@ -1,19 +1,8 @@
-use crate::{redis_ext, style};
-use ::redis::aio::ConnectionManager;
-use axum::{http::StatusCode, Extension};
-use tracing::{error, info};
+use std::time::Instant;
 
-pub async fn handle(
-    Extension(mut pool): Extension<ConnectionManager>,
-) -> Result<String, StatusCode> {
-    let latency = redis_ext::ping(&mut pool)
-        .await
-        .map_err(|e| {
-            error!("redis: {e:#}");
-            StatusCode::INTERNAL_SERVER_ERROR
-        })
-        .map(|d| format!("{:#?}", d))?;
+use axum::http::StatusCode;
 
-    info!("Redis latency: {}", style::constant(&latency));
-    Ok(format!("redis latency: {latency}"))
+pub async fn handle() -> Result<String, StatusCode> {
+    let now = Instant::now();
+    Ok(format!("running :: {now:?}"))
 }
